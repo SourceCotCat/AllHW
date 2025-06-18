@@ -8,3 +8,14 @@ __pycache__/
 .idea/
 .DS_Store
 Thumbs.db
+# файл с токеном Яндекс.Диска
+.env 
+# JSON-файл с результатами
+results.json 
+# кэши Python
+__pycache__/ 
+*.pyc
+# виртуальное окружение
+venv/ 
+env/
+main2.py

@@ -1,0 +1,6 @@
+requests
+tqdm
+yadisk
+python-dotenv
+colorlog colorama
+prompt_toolkit
