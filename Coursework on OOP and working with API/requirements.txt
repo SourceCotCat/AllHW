@@ -2,5 +2,5 @@ requests
 tqdm
 yadisk
 python-dotenv
-colorlog colorama
+colorlog
 prompt_toolkit
