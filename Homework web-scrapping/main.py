@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
+from colorama import Fore, Style, init
 
+init()
 
 KEYWORDS = ['криптовалюты', 'жизнь', 'OpenAI', 'ресурс', 'лабубу'] # Определяем список ключевых слов:
 
@@ -24,25 +26,39 @@ for article in articles:
     date_tg = article.find('time')
     date = date_tg['datetime'][:10] if date_tg else 'Дата не найдена' # дата нашей статьи (вез времени) формат year-month-day
 
-    article_response = requests.get(link)
-    article_response.raise_for_status()
-    article_soup = BeautifulSoup(article_response.text, 'html.parser')
+    try:
+        article_response = requests.get(link)
+        article_response.raise_for_status()
+        article_soup = BeautifulSoup(article_response.text, 'html.parser')
 
-    body = article_soup.find('div', {'class': lambda c: c and 'article-formatted-body' in c}) # Ищем основной текст статьи
-    full_text = body.get_text(strip=True).lower() if body else ''
+        body = article_soup.find('div', {'class': lambda c: c and 'article-formatted-body' in c}) # Ищем основной текст статьи
+        full_text = body.get_text(strip=True).lower() if body else ''
 
-    cot = article_soup.find('div', class_='tm-publication-hubs')
-    tags = []
-    if cot:
-        tag_links = cot.find_all('a', class_='tm-publication-hub__link')
-        tags = [tag.get_text(strip=True).lower() for tag in tag_links]
+        cot = article_soup.find('div', class_='tm-publication-hubs')
+        tags = []
+        if cot:
+            tag_links = cot.find_all('a', class_='tm-publication-hub__link')
+            tags = [tag.get_text(strip=True).lower() for tag in tag_links]
 
-    # Проверяем наличие любого из ключевых слов в заголовке, тексте или тегах
-    combined_text = (title + ' ' + full_text + ' ' + ' '.join(tags)).lower()
-    if any(keyword in combined_text for keyword in KEYWORDS):
-        print(f"{date} – {title} – {link}")
+        match_in_title = any(keyword in title.lower() for keyword in KEYWORDS)
+        match_in_text = any(keyword in full_text for keyword in KEYWORDS)
+        match_in_tags = any(keyword in ' '.join(tags) for keyword in KEYWORDS)
+
+        # Проверяем наличие любого из ключевых слов в заголовке, тексте или тегах
+        if match_in_title or match_in_text or match_in_tags:
+            reasons = []
+            if match_in_title:
+                reasons.append(f"{Fore.YELLOW}в заголовке{Style.RESET_ALL}")
+            if match_in_text:
+                reasons.append(f"{Fore.CYAN}в тексте{Style.RESET_ALL}")
+            if match_in_tags:
+                reasons.append(f"{Fore.MAGENTA}в тегах{Style.RESET_ALL}")
+        
+        print(f"{Fore.GREEN}ё{date} – {title} – {link}{Style.RESET_ALL} ({', '.join(reasons)})")
+
+    except Exception as e:
+        print(f"{Fore.RED}Ошибка при обработке статьи: {link}{Style.RESET_ALL}")
     
-
     # print(f"Title: {title}")
     # print(f"link: {link}")
     # print(f"date: {date}")
