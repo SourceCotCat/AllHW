@@ -24,7 +24,7 @@ for article in articles:
     link = 'https://habr.com' + title_tg['href']
 
     date_tg = article.find('time')
-    date = date_tg['datetime'][:10] if date_tg else 'Дата не найдена' # дата нашей статьи (вез времени) формат year-month-day
+    date = date_tg['datetime'][:10] if date_tg else 'Дата не найдена' # дата нашей статьи (без времени) формат year-month-day
 
     try:
         article_response = requests.get(link)
