@@ -1,4 +1,3 @@
-
 class Stack:
     def __init__(self):
         self.__items = []
@@ -12,15 +11,19 @@ class Stack:
         self.__items.append(item)
 
     def pop(self):
-        """Удаляет и возвращает верхний элемент стека, иначе возвращает None."""
+        """Удаляет и возвращает верхний элемент стека.
+        Raises: IndexError: если стек пуст.
+        """
         if self.is_empty():
-            return None
+            raise IndexError("Нельзя вызвать pop() для пустого стека")
         return self.__items.pop()
 
     def peek(self):
-        """Возвращает верхний элемент стека, не удаляя его, иначе возвращает None."""
+        """Возвращает верхний элемент стека, не удаляя его.
+        Raises: IndexError: если стек пуст.
+        """
         if self.is_empty():
-            return None
+            raise IndexError("Нельзя вызвать peek() для пустого стека")
         return self.__items[-1]
 
     def size(self):
@@ -56,17 +59,14 @@ def is_balanced(brackets):
                 return "Несбалансированно"
             
             last_opening = stack.pop()
-            if pairs[last_opening] != char:
+            if pairs.get(last_opening) != char:
                 return "Несбалансированно"
     
-    if stack.is_empty():
-        return "Сбалансированно"
-    else:
-        return "Несбалансированно"
-
+    return "Сбалансированно" if stack.is_empty() else "Несбалансированно"
 
 if __name__ == "__main__":
     print("Введите строку для проверки:")
     user_input = input()
     result = is_balanced(user_input)
     print(result)
+
